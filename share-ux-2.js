@@ -1,0 +1,22 @@
+(()=>{'use strict';
+document.head.insertAdjacentHTML('beforeend',`<style id="cc-share2-css">
+.cc-share2{margin-top:14px;padding:16px;border-radius:20px;border:1px solid #52415f;background:linear-gradient(135deg,#211a2a,#17131d)}.cc-share2-badge{display:inline-flex;padding:6px 9px;border-radius:999px;background:#30243a;border:1px solid #6b5279;color:#eadcf6;font-size:.72rem;font-weight:900}.cc-share2 h3{margin:8px 0 4px}.cc-share2-flow{display:grid;gap:8px;margin-top:12px}.cc-share2-step{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:14px;background:#121017;border:1px solid #3d3445}.cc-share2-dot{flex:0 0 28px;height:28px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#7c4db2,#c44c86);font-weight:900}.cc-share2-step span{display:block;color:#bdb1c6;font-size:.79rem;line-height:1.45;margin-top:2px}.cc-share2-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cc-share2-toast{min-height:18px;color:#d9cbe2;font-size:.78rem;margin-top:8px}@media(max-width:560px){.cc-share2-actions{grid-template-columns:1fr}}</style>`);
+const app=document.getElementById('app');
+function toast(t){const e=document.querySelector('.cc-share2-toast');if(e)e.textContent=t}
+async function copy(v,m){try{await navigator.clipboard.writeText(v);toast(m||'Copied ♥')}catch{toast('Press and hold the link to copy it.')}}
+async function share(url){const payload={title:'The Couple Check ♥',text:'I finished my side of The Couple Check ♥. Take yours privately, then we can reveal how we match.',url};if(navigator.share){try{await navigator.share(payload);toast('Share sheet opened ♥')}catch(e){if(e.name!=='AbortError')copy(url,'Partner link copied ♥')}}else copy(url,'Partner link copied ♥')}
+function lockedCard(){
+ const code=document.getElementById('share');if(!code||document.querySelector('.cc-share2'))return;const url=code.textContent.trim();const card=code.closest('.card');if(!url||!card)return;
+ const box=document.createElement('div');box.className='cc-share2';box.innerHTML='<span class="cc-share2-badge">Together, separately ♥</span><h3>Send their side — keep yours private.</h3><p class="tiny">The link contains your locked answers so your partner can complete the matching half. Only send it to the person you intend to invite.</p><div class="cc-share2-flow"><div class="cc-share2-step"><span class="cc-share2-dot">1</span><div><b>Send the partner link</b><span>They open it and answer all 32 questions privately.</span></div></div><div class="cc-share2-step"><span class="cc-share2-dot">2</span><div><b>They lock their side</b><span>Your answers remain hidden during their test.</span></div></div><div class="cc-share2-step"><span class="cc-share2-dot">3</span><div><b>Reveal together</b><span>Once they finish, their device moves straight to the shared reveal.</span></div></div></div><div class="cc-share2-actions"><button class="btn" data-ccshare>Share Partner Link ♥</button><button class="btn alt" data-cccopy>Copy Private Link</button></div><div class="cc-share2-toast"></div>';
+ card.appendChild(box);box.querySelector('[data-ccshare]').onclick=()=>share(url);box.querySelector('[data-cccopy]').onclick=()=>copy(url,'Partner link copied ♥');
+}
+function invited(){
+ if(document.querySelector('.cc-invited'))return;
+ const card=[...document.querySelectorAll('.card')].find(c=>(c.textContent||'').includes("You’re checking in with"));if(!card)return;const x=document.createElement('div');x.className='cc-share2 cc-invited';x.innerHTML='<span class="cc-share2-badge">Partner invite received ♥</span><p class="tiny" style="margin-bottom:0">Your answers are your own. Your partner’s choices stay hidden until you finish and lock your side.</p>';card.insertBefore(x,card.querySelector('input')||card.firstChild);
+}
+function ready(){
+ if(document.querySelector('.cc-ready'))return;
+ const h=[...document.querySelectorAll('h2')].find(x=>(x.textContent||'').includes('Both answers are locked'));if(!h)return;const card=h.closest('.card');if(!card)return;const x=document.createElement('div');x.className='cc-share2 cc-ready';x.innerHTML='<span class="cc-share2-badge">Your reveal is ready ✨</span><p class="tiny" style="margin-bottom:0">Both sides are locked. Nothing can be changed now — the next tap opens your shared Couple Check.</p>';card.insertBefore(x,card.querySelector('.btn')||card.lastChild);
+}
+new MutationObserver(()=>{lockedCard();invited();ready()}).observe(app,{childList:true,subtree:true});lockedCard();invited();ready();
+})();
