@@ -1,0 +1,40 @@
+name: Integrate Couple Spark
+on:
+  push:
+    branches: [qa-couple-spark]
+    paths: ['couple-spark.js', '.github/workflows/integrate-couple-spark.yml']
+permissions:
+  contents: write
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: qa-couple-spark
+      - name: Load enhancement without rewriting app logic
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          tag='<script src="./couple-spark.js"></script>'
+          if tag not in s:
+              assert '</body></html>' in s, 'Expected closing body/html marker not found'
+              s=s.replace('</body></html>',tag+'</body></html>',1)
+              p.write_text(s)
+          PY
+      - name: Verify core app and enhancement hook
+        run: |
+          grep -q "const Q=" index.html
+          grep -q "qaMode=" index.html
+          grep -q 'couple-spark.js' index.html
+          test -s couple-spark.js
+      - name: Commit integration
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html
+          git commit -m "Load Couple Spark results enhancement"
+          git push origin HEAD:qa-couple-spark
