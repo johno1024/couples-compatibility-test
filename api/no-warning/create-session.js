@@ -1,0 +1,2 @@
+const {put,makeSession}=require('./_store');
+module.exports=async function handler(req,res){if(req.method!=='POST')return res.status(405).json({error:'Method not allowed'});try{const name=String(req.body?.name||'').trim().slice(0,32);if(!name)return res.status(400).json({error:'Enter a name or nickname.'});const s=makeSession(name);await put(s);return res.status(200).json({sessionId:s.id,player1Token:s.player1Token,shareToken:s.shareToken,revealToken:s.revealToken});}catch(e){return res.status(503).json({error:'Session storage is temporarily unavailable.'})}};
