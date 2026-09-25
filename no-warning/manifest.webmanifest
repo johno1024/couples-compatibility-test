@@ -1,0 +1,12 @@
+{
+  "name":"NO WARNING — The Chemistry Test",
+  "short_name":"NO WARNING",
+  "description":"40 questions. Two people. No peeking. One reveal.",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#090708",
+  "theme_color":"#120708",
+  "orientation":"portrait-primary",
+  "icons":[{"src":"./icons/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
