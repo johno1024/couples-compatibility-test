@@ -1,0 +1,2 @@
+const {read,publicStatus}=require('./_store');
+module.exports=async function handler(req,res){if(req.method!=='GET')return res.status(405).json({error:'Method not allowed'});try{const s=await read('share',String(req.query?.shareToken||''));if(!s)return res.status(404).json({error:'Invalid or expired Share Link.'});if(!s.player1.locked)return res.status(409).json({error:'Player 1 has not locked their answers yet.'});return res.status(200).json(publicStatus(s));}catch(e){return res.status(503).json({error:'Session storage is temporarily unavailable.'})}};
