@@ -1,0 +1,1 @@
+{"name":"The Couple Check","short_name":"Couple Check","description":"A private two-person compatibility check.","start_url":"./","scope":"./","display":"standalone","background_color":"#0c0b10","theme_color":"#a765ff","orientation":"portrait-primary","icons":[{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
